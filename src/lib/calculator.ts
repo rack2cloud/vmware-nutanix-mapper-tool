@@ -20,16 +20,17 @@ export interface SizingResults {
   integrityScore: number;
   migrationComplexity: "Low" | "Medium" | "High";
   
-  // Financials (Executive View)
+  // Financials
   financials: {
     vmwareAnnual: number;
     vmware3Year: number;
     
     // Investment
-    nutanixInvestment: number; // HW + SW + Services
+    nutanixInvestment: number; 
     
     // The "Win"
     netSavings: number;
+    savingsPct: number; // <--- FIXED: Added this back so the UI doesn't crash
     savingsRange: { min: number; max: number };
     
     // Urgency Metrics
@@ -51,22 +52,17 @@ export function calculateSizing(inputs: ClusterInputs): SizingResults {
   if (inputs.consolidationRatio >= 1.5) strategyLabel = "Optimize";
   if (inputs.consolidationRatio >= 1.9) strategyLabel = "Transform";
 
-  // 3. COMPLEXITY & INTEGRITY SCORING (Rack2Cloud logic)
-  // Complexity based on scale
+  // 3. COMPLEXITY & INTEGRITY
   let migrationComplexity: "Low" | "Medium" | "High" = "Low";
   if (inputs.sourceHosts > 12) migrationComplexity = "Medium";
   if (inputs.sourceHosts > 30) migrationComplexity = "High";
 
-  // Integrity Score: Starts at 50 (Baseline). 
-  // +20 for moving off Broadcom. 
-  // +Points for Consolidation (Optimization).
   const integrityScore = Math.min(98, Math.round(50 + 20 + (inputs.consolidationRatio * 15)));
 
   // 4. FINANCIAL ESTIMATION
   const VMWARE_RATE_PER_CORE = 350; 
   const NUTANIX_HW_NODE_COST = 35000;
   
-  // SW Cost logic (Gen5 density assumption)
   const estimatedNewCoresPerNode = inputs.sourceCoresPerSocket * 1.5; 
   const totalNewCores = estimatedNodes * (inputs.sourceSockets * estimatedNewCoresPerNode);
   const NUTANIX_SW_RATE_PER_CORE = 180;
@@ -84,8 +80,8 @@ export function calculateSizing(inputs: ClusterInputs): SizingResults {
 
   // Savings
   const netSavings = vmware3Year - nutanixInvestment;
+  const savingsPct = Math.round((netSavings / vmware3Year) * 100); // <--- Calculated here
   
-  // Confidence Range (+/- 15% variance on HW/SW discounts)
   const savingsRange = {
     min: Math.round(netSavings * 0.85),
     max: Math.round(netSavings * 1.15)
@@ -94,7 +90,6 @@ export function calculateSizing(inputs: ClusterInputs): SizingResults {
   // Urgency Metrics
   const costOfInactionMonthly = Math.round(netSavings / 36);
   
-  // Payback Period: (Investment / Annual Savings) * 12
   const annualSavings = netSavings / 3;
   let paybackPeriodMonths = 0;
   if (annualSavings > 0) {
@@ -112,6 +107,7 @@ export function calculateSizing(inputs: ClusterInputs): SizingResults {
       vmware3Year,
       nutanixInvestment,
       netSavings,
+      savingsPct, // <--- Returned here
       savingsRange,
       paybackPeriodMonths,
       costOfInactionMonthly

@@ -9,7 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input"; 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"; 
 import { calculateSizing, ClusterInputs, SizingResults } from "@/lib/calculator";
-import { Share2, TrendingUp, Users, Lock, AlertTriangle, ArrowRight, Info, ShieldCheck, Clock, FileText, Download, CheckCircle2, Mail } from "lucide-react";
+import { Share2, TrendingUp, Users, Lock, AlertTriangle, ArrowRight, Info, ShieldCheck, Mail, FileText, CheckCircle2, Download } from "lucide-react";
 
 export default function Tool() {
   const [mounted, setMounted] = useState(false);
@@ -25,7 +25,6 @@ export default function Tool() {
 
   const [results, setResults] = useState<SizingResults | null>(null);
   
-  // Lead Gen
   const [isLeadModalOpen, setIsLeadModalOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -62,7 +61,7 @@ export default function Tool() {
               <Image src="https://www.rack2cloud.com/wp-content/uploads/2025/12/Icon.png" alt="Rack2Cloud" width={48} height={48} className="object-contain" />
               <div>
                 <h1 className="text-2xl font-black text-white uppercase tracking-wide print:text-black">Rack2Cloud</h1>
-                <p className="text-slate-400 text-xs font-bold uppercase tracking-[0.2em] print:text-slate-600">VMware Renewal Estimator</p>
+                <p className="text-slate-400 text-xs font-bold uppercase tracking-[0.2em] print:text-slate-600">Renewal Value Estimator</p>
               </div>
            </div>
            <div className="flex gap-3 print:hidden">
@@ -73,6 +72,15 @@ export default function Tool() {
                <Lock className="w-3 h-3 mr-2" /> Export Report
              </Button>
            </div>
+        </div>
+
+        {/* DISCLAIMER BANNER */}
+        <div className="bg-blue-950/20 border border-blue-900/30 rounded-lg p-3 flex items-start gap-3 print:bg-slate-100 print:border-slate-300">
+            <Info className="w-5 h-5 text-blue-400 shrink-0 mt-0.5 print:text-slate-600" />
+            <div className="text-xs text-blue-200/80 leading-relaxed print:text-slate-600">
+                <strong className="text-blue-100 print:text-black">Financial Planning Only:</strong> This tool provides estimated budgetary ranges for renewal vs. migration scenarios. 
+                For precise technical sizing, we recommend running <strong>RVTools</strong> or the <strong>Nutanix Collector</strong>.
+            </div>
         </div>
 
         {/* LEAD GEN MODAL */}
@@ -100,16 +108,16 @@ export default function Tool() {
           </DialogContent>
         </Dialog>
 
-        {/* MAIN LAYOUT: 2 COLUMNS (Better Alignment) */}
+        {/* MAIN LAYOUT: 2 COLUMNS (Aligns Heights Better) */}
         <div className="grid lg:grid-cols-12 gap-6 print:block">
           
-          {/* LEFT ZONE (Input + Strategy + Next Steps) */}
+          {/* LEFT ZONE: Inputs & Strategy (60% Width) */}
           <div className="lg:col-span-7 flex flex-col gap-6 print:mb-8">
             
-            {/* TOP ROW: Scope & Strategy */}
+            {/* ROW 1: SCOPE + STRATEGY */}
             <div className="grid md:grid-cols-2 gap-6 h-full">
                 
-                {/* 1. CURRENT SCOPE */}
+                {/* 1. CURRENT SCOPE BOX */}
                 <div className="bg-[#11161f] rounded-xl border border-slate-800 p-6 flex flex-col justify-between print:border-slate-300">
                     <div>
                         <div className="flex items-center gap-2 mb-6 text-slate-100 font-bold text-sm uppercase tracking-wider">
@@ -134,10 +142,11 @@ export default function Tool() {
                     <div className="mt-6 pt-4 border-t border-slate-800 print:border-slate-200 text-center">
                         <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">Total Billable Cores</div>
                         <div className="text-2xl font-black text-white print:text-black">{results?.totalLegacyCores}</div>
+                        <div className="text-[10px] text-slate-600 mt-1">Based on VCF Licensing Metric</div>
                     </div>
                 </div>
 
-                {/* 2. MIGRATION STRATEGY */}
+                {/* 2. MIGRATION STRATEGY BOX */}
                 <div className="bg-[#11161f] rounded-xl border border-slate-800 p-6 flex flex-col justify-between print:border-slate-300">
                     <div>
                         <div className="flex items-center gap-2 mb-6 text-slate-100 font-bold text-sm uppercase tracking-wider">
@@ -181,10 +190,11 @@ export default function Tool() {
                 </div>
             </div>
 
-            {/* 3. NEXT STEPS (Full Width Bottom Left) */}
+            {/* 3. NEXT STEPS BOX (Full Width Bottom) */}
             <div className="bg-blue-950/20 border border-blue-900/30 rounded-xl p-6 print:bg-slate-50 print:border-slate-300">
                 <h3 className="text-xs font-bold text-blue-100 uppercase mb-4 tracking-wider print:text-black">Recommended Next Steps</h3>
                 <div className="grid md:grid-cols-3 gap-4">
+                    
                     {/* Validate */}
                     <div className="bg-[#0b0e14] p-4 rounded-lg border border-slate-800 flex flex-col gap-2 print:bg-white print:border-slate-300">
                         <div className="flex items-center gap-2 text-slate-300 font-bold text-xs uppercase">
@@ -211,14 +221,14 @@ export default function Tool() {
                             <Mail className="w-4 h-4 text-indigo-500" /> Assess
                         </div>
                         <p className="text-[10px] text-slate-500 leading-relaxed group-hover:text-slate-400">
-                            Schedule a deep-dive with our architects at <strong>sales@rack2cloud.com</strong>.
+                            Email <strong>sales@rack2cloud.com</strong> to schedule a deep-dive.
                         </p>
                     </a>
                 </div>
             </div>
           </div>
 
-          {/* RIGHT ZONE (Financials - Full Height) */}
+          {/* RIGHT ZONE: Financial Summary (40% Width - Full Height) */}
           <div className="lg:col-span-5 space-y-6">
             <div className="bg-[#161b26] rounded-xl border border-slate-800 overflow-hidden shadow-2xl h-full flex flex-col print:bg-white print:border-2 print:border-black print:shadow-none">
                 
