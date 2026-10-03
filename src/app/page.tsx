@@ -7,23 +7,24 @@ import {
   ModernizationResults 
 } from "@/lib/calculator"; 
 
-export default function ModernizationPlanner() {
-  const [profile, setProfile] = useState<EnvironmentProfile>({
-    hosts: 6,
-    socketsPerHost: 2,
-    coresPerSocket: 48,
-    vmCount: 300,
-    storageTb: 100,
-    growthRatePct: 10,
-    contractHorizonMonths: 12,
-    bundle: "vcf",
-    hasVsan: true,
-    hasNsx: true,
-    hasSrm: true,
-    hasHorizon: false,
-    hasK8s: false,
-  });
+const INITIAL_PROFILE: EnvironmentProfile = {
+  hosts: 6,
+  socketsPerHost: 2,
+  coresPerSocket: 48,
+  vmCount: 300,
+  storageTb: 100,
+  growthRatePct: 10,
+  contractHorizonMonths: 12,
+  bundle: "vcf",
+  hasVsan: true,
+  hasNsx: true,
+  hasSrm: true,
+  hasHorizon: false,
+  hasK8s: false,
+};
 
+export default function ModernizationPlanner() {
+  const [profile, setProfile] = useState<EnvironmentProfile>(INITIAL_PROFILE);
   const [results, setResults] = useState<ModernizationResults | null>(null);
 
   useEffect(() => {
@@ -41,6 +42,10 @@ export default function ModernizationPlanner() {
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setProfile({ ...profile, [e.target.name]: e.target.value as "vcf" | "vvf" });
+  };
+
+  const handleReset = () => {
+    setProfile(INITIAL_PROFILE);
   };
 
   const getBandColor = (band: string) => {
@@ -72,37 +77,27 @@ export default function ModernizationPlanner() {
           <img src="/R2C_Logo.png" alt="Rack2Cloud" className="h-10 mb-8 object-contain" />
           
           <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
-  <div>
-    <div className="font-mono text-xs font-bold uppercase tracking-widest text-sky-400 mb-2">
-      &gt;_ Rack2Cloud Diagnostics
-    </div>
-    <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight uppercase">
-      VMware Modernization Planner
-    </h1>
-    <p className="text-slate-400 mt-2 max-w-2xl text-sm leading-relaxed">
-      The VMware Modernization Planner models renewal exposure, migration complexity, licensing pressure, and modernization scenarios using deterministic infrastructure architecture assumptions.
-    </p>
-  </div>
-  
-  {/* Share and PDF Buttons */}
-  <div className="shrink-0 flex gap-3">
-    <button 
-      onClick={() => {
-        navigator.clipboard.writeText(window.location.href);
-        alert("Link copied to clipboard!");
-      }} 
-      className="bg-transparent border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-slate-200 px-4 py-2 rounded text-xs font-bold font-mono tracking-widest transition-colors uppercase"
-    >
-      Share
-    </button>
-    <button 
-      onClick={() => window.print()} 
-      className="bg-transparent border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-slate-200 px-4 py-2 rounded text-xs font-bold font-mono tracking-widest transition-colors uppercase"
-    >
-      PDF
-    </button>
-  </div>
-</div>
+            <div>
+              <div className="font-mono text-xs font-bold uppercase tracking-widest text-sky-400 mb-2">
+                &gt;_ Rack2Cloud Diagnostics
+              </div>
+              <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight uppercase">
+                VMware Modernization Planner
+              </h1>
+              <p className="text-slate-400 mt-2 max-w-2xl text-sm leading-relaxed">
+                The VMware Modernization Planner models renewal exposure, migration complexity, licensing pressure, and modernization scenarios using deterministic infrastructure architecture assumptions.
+              </p>
+            </div>
+            
+            <div className="shrink-0 flex gap-3">
+              <button onClick={() => { navigator.clipboard.writeText(window.location.href); alert("Link copied to clipboard!"); }} className="bg-transparent border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-slate-200 px-4 py-2 rounded text-xs font-bold font-mono tracking-widest transition-colors uppercase">
+                Share
+              </button>
+              <button onClick={() => window.print()} className="bg-transparent border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-slate-200 px-4 py-2 rounded text-xs font-bold font-mono tracking-widest transition-colors uppercase">
+                PDF
+              </button>
+            </div>
+          </div>
         </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -185,6 +180,15 @@ export default function ModernizationPlanner() {
                   </label>
                 ))}
               </div>
+
+              <div className="mt-6 pt-4 border-t border-slate-800">
+                <button 
+                  onClick={handleReset}
+                  className="w-full bg-transparent hover:bg-slate-800 border border-slate-700 hover:border-slate-600 text-slate-400 hover:text-slate-200 py-2 rounded text-xs font-bold font-mono tracking-widest transition-colors uppercase"
+                >
+                  Reset Defaults
+                </button>
+              </div>
             </div>
           </div>
 
@@ -194,7 +198,6 @@ export default function ModernizationPlanner() {
             {/* 4-CARD METRIC BLOCK */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               
-              {/* MPI: The Hero Metric */}
               <div className={`col-span-2 md:col-span-2 p-6 rounded-lg border ${getBandColor(results.modernizationPressureBand)} flex flex-col justify-between`}>
                 <div className="font-mono text-xs font-bold uppercase tracking-wider mb-4 opacity-80">
                   &gt;_ Modernization Pressure Index
@@ -206,7 +209,6 @@ export default function ModernizationPlanner() {
                 <p className="mt-4 text-xs opacity-80 font-mono uppercase">Calculated Justification Output</p>
               </div>
 
-              {/* Renewal Horizon (Timer) */}
               <div className={`col-span-2 md:col-span-2 p-6 rounded-lg border ${profile.contractHorizonMonths <= 6 ? 'border-rose-500/50 bg-rose-500/10 text-rose-400' : 'border-sky-500/30 bg-sky-500/10 text-sky-400'} flex flex-col justify-between`}>
                 <div className="font-mono text-xs font-bold uppercase tracking-wider mb-4 opacity-80">
                   &gt;_ Renewal Horizon
@@ -220,7 +222,6 @@ export default function ModernizationPlanner() {
                 </p>
               </div>
 
-              {/* Exposure */}
               <div className={`col-span-1 md:col-span-2 p-4 rounded-lg border ${getBandColor(results.renewalExposureBand)} flex flex-col justify-between`}>
                 <div className="font-mono text-[10px] font-bold uppercase tracking-wider mb-2 opacity-80">&gt;_ Renewal Exposure</div>
                 <div className="flex items-baseline gap-3">
@@ -230,7 +231,6 @@ export default function ModernizationPlanner() {
                 <p className="mt-2 text-[10px] opacity-80 font-mono">Licensed Cores: {results.totalLicensedCores}</p>
               </div>
 
-              {/* Complexity */}
               <div className={`col-span-1 md:col-span-2 p-4 rounded-lg border ${getBandColor(results.migrationComplexityBand)} flex flex-col justify-between`}>
                 <div className="font-mono text-[10px] font-bold uppercase tracking-wider mb-2 opacity-80">&gt;_ Migration Complexity</div>
                 <div className="flex items-baseline gap-3">
@@ -242,7 +242,6 @@ export default function ModernizationPlanner() {
 
             </div>
 
-            {/* Framework Signals */}
             {results.frameworkSignals.length > 0 && (
               <div className="space-y-4">
                 {results.frameworkSignals.map((signal) => (
@@ -259,7 +258,6 @@ export default function ModernizationPlanner() {
               </div>
             )}
 
-            {/* 4-Scenario Financials */}
             <div className="bg-slate-900 border border-slate-800 rounded-lg p-6">
               <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-800">
                 <h2 className="font-mono text-sm font-bold text-white uppercase tracking-wider">
@@ -300,7 +298,6 @@ export default function ModernizationPlanner() {
                 ))}
               </div>
 
-              {/* Recommended Path Footer */}
               <div className="mt-6 pt-6 border-t border-dashed border-slate-800">
                 <h4 className="font-mono text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Architectural Signal</h4>
                 <p className="text-lg text-white font-medium leading-relaxed">
@@ -313,7 +310,6 @@ export default function ModernizationPlanner() {
           </div>
         </div>
 
-        {/* Updated Footer */}
         <div className="mt-12 pt-8 border-t border-slate-800 pb-12">
           <div className="text-left mb-10 text-xs text-slate-500 font-mono leading-relaxed">
             <strong className="text-slate-400 uppercase tracking-widest">&gt;_ Disclaimer:</strong> The VMware Modernization Planner is a strategic estimation tool based on field observations, generalized platform pricing, and standard architectural patterns. It does not constitute a formal vendor quote, guaranteed pricing, or binding architectural advice. Actual renewal costs and migration complexities will vary based on enterprise agreements, workload telemetry, and specific technical debt.
