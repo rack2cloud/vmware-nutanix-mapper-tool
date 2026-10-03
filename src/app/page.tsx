@@ -77,7 +77,7 @@ export default function ModernizationPlanner() {
                 VMware Modernization Planner
               </h1>
               <p className="text-slate-400 mt-2 max-w-2xl text-sm leading-relaxed">
-                Deterministic architectural modeling. Enter your footprint telemetry to generate your renewal exposure baseline, migration complexity scorecard, and strategic path analysis.
+                Deterministic architectural modeling. Enter your environment profile to generate a renewal exposure baseline, migration complexity score, and strategic scenario analysis.
               </p>
             </div>
             
@@ -139,8 +139,15 @@ export default function ModernizationPlanner() {
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-slate-400 mb-1">Target Bundle</label>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="col-span-2">
+                    <label className="block text-slate-400 mb-1">Storage (TB)</label>
+                    <input type="number" name="storageTb" value={profile.storageTb} onChange={handleNumberChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono" />
+                  </div>
+                </div>
+
+                <div className="mt-4">
+                  <label className="block text-slate-400 mb-1">VMware Renewal Bundle</label>
                   <select name="bundle" value={profile.bundle} onChange={handleSelectChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono uppercase">
                     <option value="vvf">VMware vSphere Foundation (VVF)</option>
                     <option value="vcf">VMware Cloud Foundation (VCF)</option>
@@ -258,20 +265,20 @@ export default function ModernizationPlanner() {
                     <div className="space-y-2 font-mono text-xs">
                       <div className="flex justify-between border-b border-slate-800 pb-1">
                         <span className="text-slate-400">Year 1 Run Rate:</span>
-                        <span className="text-white font-bold">${scenario.year1Cost.toLocaleString()}</span>
+                        <span className="text-white font-bold">${scenario.year1RecurringCost.toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between border-b border-slate-800 pb-1">
-                        <span className="text-slate-400">3-Year TCO:</span>
-                        <span className="text-sky-400 font-bold">${scenario.year3Cost.toLocaleString()}</span>
-                      </div>
-                      <div className="flex justify-between border-b border-slate-800 pb-1">
-                        <span className="text-slate-400">CapEx Req:</span>
-                        <span className={scenario.capexRequirement > 0 ? "text-amber-400" : "text-emerald-400"}>
-                          ${scenario.capexRequirement.toLocaleString()}
+                        <span className="text-slate-400">Hardware CapEx:</span>
+                        <span className={scenario.hardwareCost > 0 ? "text-amber-400" : "text-slate-500"}>
+                          ${scenario.hardwareCost.toLocaleString()}
                         </span>
                       </div>
+                      <div className="flex justify-between border-b border-slate-800 pb-1">
+                        <span className="text-slate-400">3-Yr Modeled Cost:</span>
+                        <span className="text-sky-400 font-bold">${scenario.threeYearModeledCost.toLocaleString()}</span>
+                      </div>
                       <div className="flex justify-between pt-1">
-                        <span className="text-slate-400">Effort Window:</span>
+                        <span className="text-slate-400">Planning Window:</span>
                         <span className="text-white">{scenario.migrationEffortMonths} Months</span>
                       </div>
                     </div>
@@ -301,7 +308,7 @@ export default function ModernizationPlanner() {
           </div>
 
           {/* Privacy Architecture Block */}
-          <div className="pt-6 border-t border-slate-800/50 text-center text-slate-400 font-sans text-sm">
+          <div className="pt-6 border-t border-slate-800/50 text-left text-slate-400 font-sans text-sm">
             <p className="m-0">
               <span className="mr-2">🔒</span> <strong>Privacy Architecture:</strong> No cookies. No tracking pixels. No server-side database. <br />
               <span className="text-slate-500">This logic runs entirely in your local browser session.</span>
