@@ -5,7 +5,7 @@ import {
   calculateModernization, 
   EnvironmentProfile, 
   ModernizationResults 
-} from "@/lib/calculator"; // Adjust path if your calculator.ts is elsewhere
+} from "@/lib/calculator";
 
 export default function ModernizationPlanner() {
   // 1. Initial State Mapping
