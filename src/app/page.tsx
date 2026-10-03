@@ -76,7 +76,7 @@ export default function ModernizationPlanner() {
     <div className="min-h-screen bg-[#0a0f1e] text-slate-300 font-sans p-6 lg:p-12">
       <div className="max-w-7xl mx-auto">
         
-        {/* REBUILT HEADER BLOCK */}
+        {/* HEADER BLOCK */}
         <header className="mb-12 pt-4">
           <div className="flex flex-wrap gap-3 mb-6 font-mono text-[10px] sm:text-xs tracking-widest uppercase">
             <span className="border border-sky-500 text-sky-400 px-3 py-1.5 rounded-sm">Virtualization Architecture: Tool</span>
@@ -253,7 +253,7 @@ export default function ModernizationPlanner() {
 
             </div>
 
-            {/* REBUILT FRAMEWORK SIGNALS ROUTING BLOCK */}
+            {/* FRAMEWORK SIGNALS ROUTING BLOCK */}
             {results.frameworkSignals.length > 0 && (
               <div className="space-y-4">
                 {results.frameworkSignals.map((signal) => (
@@ -287,11 +287,11 @@ export default function ModernizationPlanner() {
                       </p>
                     </div>
 
-                    {/* Action Footer: Architect's Brief */}
-                    {signal.briefUrl && (
+                    {/* Action Footer: Single Destination CTA */}
+                    {signal.frameworkUrl && (
                       <div className="mt-2 pt-3 border-t border-slate-800/60 flex justify-start">
-                        <Link href={signal.briefUrl} className="text-sky-400 hover:text-sky-300 font-mono text-[10px] uppercase font-bold tracking-widest transition-colors flex items-center gap-1.5 group">
-                          Architect's Brief <span className="group-hover:translate-x-1 transition-transform">→</span>
+                        <Link href={signal.frameworkUrl} className="text-sky-400 hover:text-sky-300 font-mono text-[10px] uppercase font-bold tracking-widest transition-colors flex items-center gap-1.5 group">
+                          View Framework <span className="group-hover:translate-x-1 transition-transform">→</span>
                         </Link>
                       </div>
                     )}
