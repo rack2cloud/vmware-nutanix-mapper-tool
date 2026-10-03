@@ -8,7 +8,6 @@ import {
 } from "@/lib/calculator"; 
 
 export default function ModernizationPlanner() {
-  // 1. Initial State Mapping
   const [profile, setProfile] = useState<EnvironmentProfile>({
     hosts: 6,
     socketsPerHost: 2,
@@ -27,13 +26,11 @@ export default function ModernizationPlanner() {
 
   const [results, setResults] = useState<ModernizationResults | null>(null);
 
-  // 2. Calculation Engine Trigger
   useEffect(() => {
     const updatedResults = calculateModernization(profile);
     setResults(updatedResults);
   }, [profile]);
 
-  // 3. Input Handlers
   const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setProfile({ ...profile, [e.target.name]: Number(e.target.value) });
   };
@@ -46,14 +43,21 @@ export default function ModernizationPlanner() {
     setProfile({ ...profile, [e.target.name]: e.target.value as "vcf" | "vvf" });
   };
 
-  // Helper for dynamic score coloring
   const getBandColor = (band: string) => {
     switch (band) {
       case "Critical":
-      case "Very High": return "text-rose-500 border-rose-500/30 bg-rose-500/10";
-      case "High": return "text-orange-500 border-orange-500/30 bg-orange-500/10";
-      case "Moderate": return "text-amber-500 border-amber-500/30 bg-amber-500/10";
-      case "Low": return "text-emerald-500 border-emerald-500/30 bg-emerald-500/10";
+      case "Very High": 
+      case "Actively Migrate":
+        return "text-rose-500 border-rose-500/30 bg-rose-500/10";
+      case "High": 
+      case "Plan Exit":
+        return "text-orange-500 border-orange-500/30 bg-orange-500/10";
+      case "Moderate": 
+      case "Evaluate":
+        return "text-amber-500 border-amber-500/30 bg-amber-500/10";
+      case "Low": 
+      case "Stay":
+        return "text-emerald-500 border-emerald-500/30 bg-emerald-500/10";
       default: return "text-slate-400 border-slate-700 bg-slate-800";
     }
   };
@@ -64,7 +68,6 @@ export default function ModernizationPlanner() {
     <div className="min-h-screen bg-[#0f172a] text-slate-300 font-sans p-6 lg:p-12">
       <div className="max-w-7xl mx-auto">
         
-        {/* Header with Logo and Action Buttons */}
         <header className="mb-12 border-b border-slate-800 pb-6">
           <img src="/R2C_Logo.png" alt="Rack2Cloud" className="h-10 mb-8 object-contain" />
           
@@ -81,21 +84,11 @@ export default function ModernizationPlanner() {
               </p>
             </div>
             
-            {/* Share and PDF Buttons */}
             <div className="shrink-0 flex gap-3">
-              <button 
-                onClick={() => {
-                  navigator.clipboard.writeText(window.location.href);
-                  alert("Link copied to clipboard!");
-                }} 
-                className="bg-transparent border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-slate-200 px-4 py-2 rounded text-xs font-bold font-mono tracking-widest transition-colors uppercase"
-              >
+              <button onClick={() => { navigator.clipboard.writeText(window.location.href); alert("Link copied to clipboard!"); }} className="bg-transparent border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-slate-200 px-4 py-2 rounded text-xs font-bold font-mono tracking-widest transition-colors uppercase">
                 Share
               </button>
-              <button 
-                onClick={() => window.print()} 
-                className="bg-transparent border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-slate-200 px-4 py-2 rounded text-xs font-bold font-mono tracking-widest transition-colors uppercase"
-              >
+              <button onClick={() => window.print()} className="bg-transparent border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-slate-200 px-4 py-2 rounded text-xs font-bold font-mono tracking-widest transition-colors uppercase">
                 PDF
               </button>
             </div>
@@ -104,12 +97,8 @@ export default function ModernizationPlanner() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
-          {/* ==========================================
-              LEFT PANEL: INPUTS (4 Columns)
-              ========================================== */}
+          {/* LEFT PANEL */}
           <div className="lg:col-span-4 space-y-8">
-            
-            {/* Structural Footprint */}
             <div className="bg-slate-900 border border-slate-800 rounded-lg p-6">
               <h2 className="font-mono text-sm font-bold text-white uppercase tracking-wider mb-6 flex items-center gap-2">
                 <span className="w-2 h-2 bg-sky-400 rounded-full"></span>
@@ -167,7 +156,6 @@ export default function ModernizationPlanner() {
               </div>
             </div>
 
-            {/* Complexity Matrix */}
             <div className="bg-slate-900 border border-slate-800 rounded-lg p-6">
               <h2 className="font-mono text-sm font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
                 <span className="w-2 h-2 bg-amber-500 rounded-full"></span>
@@ -182,13 +170,7 @@ export default function ModernizationPlanner() {
                   { name: "hasK8s", label: "Tanzu / K8s" }
                 ].map((feature) => (
                   <label key={feature.name} className="flex items-center space-x-3 cursor-pointer p-2 hover:bg-slate-800/50 rounded transition-colors border border-transparent hover:border-slate-700">
-                    <input 
-                      type="checkbox" 
-                      name={feature.name} 
-                      checked={profile[feature.name as keyof EnvironmentProfile] as boolean} 
-                      onChange={handleCheckboxChange} 
-                      className="form-checkbox h-4 w-4 text-sky-500 bg-[#0a0f1e] border-slate-700 rounded focus:ring-sky-500 focus:ring-offset-slate-900" 
-                    />
+                    <input type="checkbox" name={feature.name} checked={profile[feature.name as keyof EnvironmentProfile] as boolean} onChange={handleCheckboxChange} className="form-checkbox h-4 w-4 text-sky-500 bg-[#0a0f1e] border-slate-700 rounded focus:ring-sky-500 focus:ring-offset-slate-900" />
                     <span className="text-slate-300">{feature.label}</span>
                   </label>
                 ))}
@@ -196,39 +178,61 @@ export default function ModernizationPlanner() {
             </div>
           </div>
 
-          {/* ==========================================
-              RIGHT PANEL: OUTPUTS (8 Columns)
-              ========================================== */}
+          {/* RIGHT PANEL */}
           <div className="lg:col-span-8 space-y-8">
             
-            {/* Top Row: Diagnostic Scores */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* 4-CARD METRIC BLOCK */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               
-              <div className={`p-6 rounded-lg border ${getBandColor(results.renewalExposureBand)} flex flex-col justify-between`}>
+              {/* MPI: The Hero Metric */}
+              <div className={`col-span-2 md:col-span-2 p-6 rounded-lg border ${getBandColor(results.modernizationPressureBand)} flex flex-col justify-between`}>
                 <div className="font-mono text-xs font-bold uppercase tracking-wider mb-4 opacity-80">
-                  &gt;_ Renewal Exposure Score
+                  &gt;_ Modernization Pressure Index
                 </div>
                 <div className="flex items-baseline gap-4">
-                  <span className="text-6xl font-black">{results.renewalExposureScore}</span>
-                  <span className="text-xl font-bold uppercase tracking-widest opacity-90">{results.renewalExposureBand}</span>
+                  <span className="text-6xl font-black">{results.modernizationPressureIndex}</span>
+                  <span className="text-xl font-bold uppercase tracking-widest opacity-90">{results.modernizationPressureBand}</span>
                 </div>
-                <p className="mt-4 text-sm opacity-80 font-mono">Licensed Cores: {results.totalLicensedCores}</p>
+                <p className="mt-4 text-xs opacity-80 font-mono uppercase">Calculated Justification Output</p>
               </div>
 
-              <div className={`p-6 rounded-lg border ${getBandColor(results.migrationComplexityBand)} flex flex-col justify-between`}>
+              {/* Renewal Horizon (Timer) */}
+              <div className={`col-span-2 md:col-span-2 p-6 rounded-lg border ${profile.contractHorizonMonths <= 6 ? 'border-rose-500/50 bg-rose-500/10 text-rose-400' : 'border-sky-500/30 bg-sky-500/10 text-sky-400'} flex flex-col justify-between`}>
                 <div className="font-mono text-xs font-bold uppercase tracking-wider mb-4 opacity-80">
-                  &gt;_ Migration Complexity
+                  &gt;_ Renewal Horizon
                 </div>
-                <div className="flex items-baseline gap-4">
-                  <span className="text-6xl font-black">{results.migrationComplexityScore}</span>
-                  <span className="text-xl font-bold uppercase tracking-widest opacity-90">{results.migrationComplexityBand}</span>
+                <div className="flex items-baseline gap-3">
+                  <span className="text-6xl font-black">{profile.contractHorizonMonths}</span>
+                  <span className="text-lg font-bold uppercase tracking-widest opacity-90">Months</span>
                 </div>
-                <p className="mt-4 text-sm opacity-80 font-mono">Consolidation Ratio: {results.consolidationRatio.toFixed(2)}x</p>
+                <p className="mt-4 text-xs opacity-80 font-mono uppercase">
+                  Decision Window: {profile.contractHorizonMonths <= 6 ? 'Immediate Action' : profile.contractHorizonMonths <= 12 ? 'Planning Phase' : 'Evaluating Options'}
+                </p>
               </div>
-              
+
+              {/* Exposure */}
+              <div className={`col-span-1 md:col-span-2 p-4 rounded-lg border ${getBandColor(results.renewalExposureBand)} flex flex-col justify-between`}>
+                <div className="font-mono text-[10px] font-bold uppercase tracking-wider mb-2 opacity-80">&gt;_ Renewal Exposure</div>
+                <div className="flex items-baseline gap-3">
+                  <span className="text-4xl font-black">{results.renewalExposureScore}</span>
+                  <span className="text-sm font-bold uppercase tracking-widest opacity-90">{results.renewalExposureBand}</span>
+                </div>
+                <p className="mt-2 text-[10px] opacity-80 font-mono">Licensed Cores: {results.totalLicensedCores}</p>
+              </div>
+
+              {/* Complexity */}
+              <div className={`col-span-1 md:col-span-2 p-4 rounded-lg border ${getBandColor(results.migrationComplexityBand)} flex flex-col justify-between`}>
+                <div className="font-mono text-[10px] font-bold uppercase tracking-wider mb-2 opacity-80">&gt;_ Migration Complexity</div>
+                <div className="flex items-baseline gap-3">
+                  <span className="text-4xl font-black">{results.migrationComplexityScore}</span>
+                  <span className="text-sm font-bold uppercase tracking-widest opacity-90">{results.migrationComplexityBand}</span>
+                </div>
+                <p className="mt-2 text-[10px] opacity-80 font-mono">Consolidation: {results.consolidationRatio.toFixed(2)}x</p>
+              </div>
+
             </div>
 
-            {/* Framework Signals (Conditionally Rendered) */}
+            {/* Framework Signals */}
             {results.frameworkSignals.length > 0 && (
               <div className="space-y-4">
                 {results.frameworkSignals.map((signal) => (
@@ -299,22 +303,17 @@ export default function ModernizationPlanner() {
           </div>
         </div>
 
-        {/* Updated Footer & Disclaimers */}
+        {/* Updated Footer */}
         <div className="mt-12 pt-8 border-t border-slate-800 pb-12">
-          
-          {/* Left-Aligned Main Disclaimer */}
           <div className="text-left mb-10 text-xs text-slate-500 font-mono leading-relaxed">
-            <strong className="text-slate-400 uppercase tracking-widest">&gt;_ Disclaimer:</strong> The VMware Modernization Planner is a strategic estimation tool based on field observations, generalized platform pricing, and standard architectural patterns. It does not constitute a formal vendor quote, guaranteed pricing, or binding architectural advice. Actual renewal costs and migration complexities will vary based on enterprise agreements, workload telemetry, and specific technical debt. Nothing leaves your browser.
+            <strong className="text-slate-400 uppercase tracking-widest">&gt;_ Disclaimer:</strong> The VMware Modernization Planner is a strategic estimation tool based on field observations, generalized platform pricing, and standard architectural patterns. It does not constitute a formal vendor quote, guaranteed pricing, or binding architectural advice. Actual renewal costs and migration complexities will vary based on enterprise agreements, workload telemetry, and specific technical debt.
           </div>
-
-          {/* Privacy Architecture Block */}
           <div className="pt-6 border-t border-slate-800/50 text-left text-slate-400 font-sans text-sm">
             <p className="m-0">
-              <span className="mr-2">🔒</span> <strong>Privacy Architecture:</strong> No cookies. No tracking pixels. No server-side database. <br />
-              <span className="text-slate-500">This logic runs entirely in your local browser session.</span>
+              <span className="mr-2">🔒</span> <strong>Privacy Architecture:</strong> The calculator performs all modeling locally in your browser. <br />
+              <span className="text-slate-500">No calculator inputs are transmitted to Rack2Cloud servers.</span>
             </p>
           </div>
-
         </div>
 
       </div>
