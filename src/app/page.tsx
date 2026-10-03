@@ -66,7 +66,6 @@ export default function ModernizationPlanner() {
         
         {/* Header with Logo and Action Buttons */}
         <header className="mb-12 border-b border-slate-800 pb-6">
-          {/* Logo element - reads from public/R2C_Logo.png */}
           <img src="/R2C_Logo.png" alt="Rack2Cloud" className="h-10 mb-8 object-contain" />
           
           <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
@@ -82,7 +81,7 @@ export default function ModernizationPlanner() {
               </p>
             </div>
             
-            {/* Share and PDF Buttons styled like Cost Model */}
+            {/* Share and PDF Buttons */}
             <div className="shrink-0 flex gap-3">
               <button 
                 onClick={() => {
@@ -222,7 +221,7 @@ export default function ModernizationPlanner() {
               
             </div>
 
-            {/* Framework Signals (Conditionally Rendered based on Calculator logic) */}
+            {/* Framework Signals (Conditionally Rendered) */}
             {results.frameworkSignals.length > 0 && (
               <div className="space-y-4">
                 {results.frameworkSignals.map((signal) => (
@@ -293,7 +292,7 @@ export default function ModernizationPlanner() {
           </div>
         </div>
 
-        {/* Disclaimer Footer */}
+        {/* Updated Footer & Disclaimers */}
         <div className="mt-12 pt-8 border-t border-slate-800 pb-12">
           
           {/* Left-Aligned Main Disclaimer */}
@@ -314,3 +313,4 @@ export default function ModernizationPlanner() {
       </div>
     </div>
   );
+}
