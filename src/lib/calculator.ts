@@ -37,6 +37,8 @@ export interface FrameworkSignal {
   severity: "Info" | "Warning" | "Critical";
   driver: string;
   explanation: string;
+  frameworkUrl?: string;
+  briefUrl?: string;    
 }
 
 export interface ModernizationResults {
@@ -166,7 +168,9 @@ function evaluateFrameworks(inputs: EnvironmentProfile, exposure: number, consol
       title: "Lifecycle Convergence",
       severity: "Critical",
       driver: "Rapid growth colliding with an imminent renewal.",
-      explanation: "Licensing renewal and capacity expansion are occurring within the same immediate budget cycle, multiplying the cost impact."
+      explanation: "Licensing renewal and capacity expansion are occurring within the same immediate budget cycle, multiplying the cost impact.",
+      frameworkUrl: "https://www.rack2cloud.com/lifecycle-convergence/",
+      briefUrl: "/architects-brief/managing-rapid-growth-renewals" // Replace or delete
     });
   }
 
@@ -178,7 +182,9 @@ function evaluateFrameworks(inputs: EnvironmentProfile, exposure: number, consol
         title: "Phantom Capacity",
         severity: "Warning",
         driver: "Low consolidation potential driven by poor workload density.",
-        explanation: `Averaging ${coresPerVm.toFixed(1)} cores per VM. You are paying enterprise per-core licensing premiums for unused compute headroom.`
+        explanation: `Averaging ${coresPerVm.toFixed(1)} cores per VM. You are paying enterprise per-core licensing premiums for unused compute headroom.`,
+        frameworkUrl: "https://www.rack2cloud.com/phantom-capacity/",
+        briefUrl: "/architects-brief/vmware-workload-density-optimization" // Replace or delete
       });
     }
   }
@@ -189,7 +195,9 @@ function evaluateFrameworks(inputs: EnvironmentProfile, exposure: number, consol
       title: "Governance Cost Inversion",
       severity: "Warning",
       driver: "VCF adoption at high core counts without offsetting automation.",
-      explanation: "Platform governance costs are growing faster than operational value derived from the additional platform features."
+      explanation: "Platform governance costs are growing faster than operational value derived from the additional platform features.",
+      frameworkUrl: "https://www.rack2cloud.com/governance-cost-inversion/",
+      briefUrl: "/architects-brief/vcf-adoption-scale-economics" // Replace or delete
     });
   }
 
