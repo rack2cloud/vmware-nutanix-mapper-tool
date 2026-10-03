@@ -5,22 +5,22 @@ import {
   calculateModernization, 
   EnvironmentProfile, 
   ModernizationResults 
-} from "@/lib/calculator";
+} from "@/lib/calculator"; 
 
 export default function ModernizationPlanner() {
   // 1. Initial State Mapping
   const [profile, setProfile] = useState<EnvironmentProfile>({
-    hosts: 16,
+    hosts: 6,
     socketsPerHost: 2,
-    coresPerSocket: 16,
+    coresPerSocket: 48,
     vmCount: 300,
     storageTb: 100,
     growthRatePct: 10,
     contractHorizonMonths: 12,
-    bundle: "vvf",
-    hasVsan: false,
-    hasNsx: false,
-    hasSrm: false,
+    bundle: "vcf",
+    hasVsan: true,
+    hasNsx: true,
+    hasSrm: true,
     hasHorizon: false,
     hasK8s: false,
   });
@@ -64,17 +64,28 @@ export default function ModernizationPlanner() {
     <div className="min-h-screen bg-[#0f172a] text-slate-300 font-sans p-6 lg:p-12">
       <div className="max-w-7xl mx-auto">
         
-        {/* Header */}
-        <header className="mb-12 border-b border-slate-800 pb-6">
-          <div className="font-mono text-xs font-bold uppercase tracking-widest text-sky-400 mb-2">
-            &gt;_ Rack2Cloud Diagnostics
+        {/* Header with Print Button */}
+        <header className="mb-12 border-b border-slate-800 pb-6 flex flex-col md:flex-row md:items-start justify-between gap-6">
+          <div>
+            <div className="font-mono text-xs font-bold uppercase tracking-widest text-sky-400 mb-2">
+              &gt;_ Rack2Cloud Diagnostics
+            </div>
+            <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight uppercase">
+              VMware Modernization Planner
+            </h1>
+            <p className="text-slate-400 mt-2 max-w-2xl text-sm leading-relaxed">
+              Deterministic architectural modeling. Enter your footprint telemetry to generate your renewal exposure baseline, migration complexity scorecard, and strategic path analysis.
+            </p>
           </div>
-          <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight uppercase">
-            VMware Modernization Planner
-          </h1>
-          <p className="text-slate-400 mt-2 max-w-2xl text-sm leading-relaxed">
-            Deterministic architectural modeling. Enter your footprint telemetry to generate your renewal exposure baseline, migration complexity scorecard, and strategic path analysis.
-          </p>
+          <div className="shrink-0 flex gap-4">
+            <button 
+              onClick={() => window.print()} 
+              className="flex items-center gap-2 bg-[#0a0f1e] hover:bg-slate-800 text-sky-400 px-4 py-2 border border-sky-900 rounded text-xs font-bold font-mono tracking-widest transition-colors uppercase"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
+              Print / PDF
+            </button>
+          </div>
         </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -196,12 +207,12 @@ export default function ModernizationPlanner() {
               
             </div>
 
-            {/* Framework Signals */}
+            {/* Framework Signals (Conditionally Rendered based on Calculator logic) */}
             {results.frameworkSignals.length > 0 && (
               <div className="space-y-4">
                 {results.frameworkSignals.map((signal) => (
                   <div key={signal.id} className="bg-slate-900 border-l-4 border-rose-500 p-4 border border-slate-800 rounded-r-lg flex gap-4 items-start">
-                    <div className="bg-rose-500/20 text-rose-400 font-mono text-xs font-bold px-2 py-1 rounded">
+                    <div className="bg-rose-500/20 text-rose-400 font-mono text-xs font-bold px-2 py-1 rounded mt-1">
                       #{signal.id}
                     </div>
                     <div>
@@ -266,6 +277,14 @@ export default function ModernizationPlanner() {
 
           </div>
         </div>
+
+        {/* Disclaimer Footer */}
+        <div className="mt-12 pt-8 border-t border-slate-800 text-center pb-12">
+          <p className="text-xs text-slate-500 font-mono leading-relaxed max-w-4xl mx-auto">
+            <strong className="text-slate-400 uppercase tracking-widest">&gt;_ Disclaimer:</strong> The VMware Modernization Planner is a strategic estimation tool based on field observations, generalized platform pricing, and standard architectural patterns. It does not constitute a formal vendor quote, guaranteed pricing, or binding architectural advice. Actual renewal costs and migration complexities will vary based on enterprise agreements, workload telemetry, and specific technical debt. Nothing leaves your browser.
+          </p>
+        </div>
+
       </div>
     </div>
   );
