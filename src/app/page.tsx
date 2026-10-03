@@ -301,7 +301,7 @@ export default function ModernizationPlanner() {
           </div>
 
           {/* Privacy Architecture Block */}
-          <div className="pt-6 border-t border-slate-800/50 text-left text-slate-400 font-sans text-sm">
+          <div className="pt-6 border-t border-slate-800/50 text-center text-slate-400 font-sans text-sm">
             <p className="m-0">
               <span className="mr-2">🔒</span> <strong>Privacy Architecture:</strong> No cookies. No tracking pixels. No server-side database. <br />
               <span className="text-slate-500">This logic runs entirely in your local browser session.</span>
