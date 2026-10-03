@@ -7,7 +7,8 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "VMware Modernization Planner | Rack2Cloud",
-  description: "Model VMware renewal exposure, migration complexity, and modernization scenarios using deterministic infrastructure architecture assumptions.",
+  description:
+    "Model VMware renewal exposure, migration complexity, licensing pressure, and modernization scenarios using deterministic infrastructure architecture assumptions.",
   keywords: [
     "vmware modernization planner",
     "vmware renewal cost",
@@ -16,6 +17,15 @@ export const metadata: Metadata = {
     "vmware licensing",
     "vmware cloud foundation"
   ],
+  alternates: {
+    canonical: "/vmware-modernization-planner"
+  },
+  openGraph: {
+    title: "VMware Modernization Planner",
+    description:
+      "Model VMware renewal exposure, migration complexity, and modernization scenarios.",
+    type: "website"
+  }
 };
 
 export default function RootLayout({
