@@ -34,19 +34,19 @@ export default function ModernizationPlanner() {
 
   const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value === "" ? 0 : Number(e.target.value);
-    setProfile({ ...profile, [e.target.name]: val });
+    setProfile(prev => ({ ...prev, [e.target.name]: val }));
   };
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setProfile({ ...profile, [e.target.name]: e.target.checked });
+    setProfile(prev => ({ ...prev, [e.target.name]: e.target.checked }));
   };
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setProfile({ ...profile, [e.target.name]: e.target.value as "vcf" | "vvf" });
+    setProfile(prev => ({ ...prev, [e.target.name]: e.target.value as "vcf" | "vvf" }));
   };
 
   const handleReset = () => {
-    setProfile({ ...INITIAL_PROFILE });
+    setProfile(() => ({ ...INITIAL_PROFILE }));
   };
 
   const getBandColor = (band: string) => {
@@ -91,10 +91,10 @@ export default function ModernizationPlanner() {
             </div>
             
             <div className="shrink-0 flex gap-3">
-              <button onClick={() => { navigator.clipboard.writeText(window.location.href); alert("Link copied to clipboard!"); }} className="bg-transparent border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-slate-200 px-4 py-2 rounded text-xs font-bold font-mono tracking-widest transition-colors uppercase">
+              <button type="button" onClick={() => { navigator.clipboard.writeText(window.location.href); alert("Link copied to clipboard!"); }} className="bg-transparent border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-slate-200 px-4 py-2 rounded text-xs font-bold font-mono tracking-widest transition-colors uppercase">
                 Share
               </button>
-              <button onClick={() => window.print()} className="bg-transparent border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-slate-200 px-4 py-2 rounded text-xs font-bold font-mono tracking-widest transition-colors uppercase">
+              <button type="button" onClick={() => window.print()} className="bg-transparent border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-slate-200 px-4 py-2 rounded text-xs font-bold font-mono tracking-widest transition-colors uppercase">
                 PDF
               </button>
             </div>
@@ -184,6 +184,7 @@ export default function ModernizationPlanner() {
 
               <div className="mt-6 pt-4 border-t border-slate-800">
                 <button 
+                  type="button"
                   onClick={handleReset}
                   className="r2c-btn-full w-full bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/30 hover:border-sky-500/50 text-sky-400 py-2.5 rounded text-xs font-bold font-mono tracking-widest transition-colors uppercase"
                 >
@@ -315,7 +316,7 @@ export default function ModernizationPlanner() {
           <div className="text-left mb-10 text-xs text-slate-500 font-mono leading-relaxed">
             <strong className="text-slate-400 uppercase tracking-widest">&gt;_ Disclaimer:</strong> The VMware Modernization Planner is a strategic estimation tool based on field observations, generalized platform pricing, and standard architectural patterns. It does not constitute a formal vendor quote, guaranteed pricing, or binding architectural advice. Actual renewal costs and migration complexities will vary based on enterprise agreements, workload telemetry, and specific technical debt.
           </div>
-          <div className="pt-6 border-t border-slate-800/50 text-left text-slate-400 font-sans text-sm">
+          <div className="pt-6 border-t border-slate-800/50 text-center text-slate-400 font-sans text-sm">
             <p className="m-0">
               <span className="mr-2">🔒</span> <strong>Privacy Architecture:</strong> The calculator performs all modeling locally in your browser. <br />
               <span className="text-slate-500">No calculator inputs are transmitted to Rack2Cloud servers.</span>
