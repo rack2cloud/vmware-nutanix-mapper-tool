@@ -72,27 +72,37 @@ export default function ModernizationPlanner() {
           <img src="/R2C_Logo.png" alt="Rack2Cloud" className="h-10 mb-8 object-contain" />
           
           <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
-            <div>
-              <div className="font-mono text-xs font-bold uppercase tracking-widest text-sky-400 mb-2">
-                &gt;_ Rack2Cloud Diagnostics
-              </div>
-              <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight uppercase">
-                VMware Modernization Planner
-              </h1>
-              <p className="text-slate-400 mt-2 max-w-2xl text-sm leading-relaxed">
-                Deterministic architectural modeling. Enter your environment profile to generate a renewal exposure baseline, migration complexity score, and strategic scenario analysis.
-              </p>
-            </div>
-            
-            <div className="shrink-0 flex gap-3">
-              <button onClick={() => { navigator.clipboard.writeText(window.location.href); alert("Link copied to clipboard!"); }} className="bg-transparent border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-slate-200 px-4 py-2 rounded text-xs font-bold font-mono tracking-widest transition-colors uppercase">
-                Share
-              </button>
-              <button onClick={() => window.print()} className="bg-transparent border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-slate-200 px-4 py-2 rounded text-xs font-bold font-mono tracking-widest transition-colors uppercase">
-                PDF
-              </button>
-            </div>
-          </div>
+  <div>
+    <div className="font-mono text-xs font-bold uppercase tracking-widest text-sky-400 mb-2">
+      &gt;_ Rack2Cloud Diagnostics
+    </div>
+    <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight uppercase">
+      VMware Modernization Planner
+    </h1>
+    <p className="text-slate-400 mt-2 max-w-2xl text-sm leading-relaxed">
+      The VMware Modernization Planner models renewal exposure, migration complexity, licensing pressure, and modernization scenarios using deterministic infrastructure architecture assumptions.
+    </p>
+  </div>
+  
+  {/* Share and PDF Buttons */}
+  <div className="shrink-0 flex gap-3">
+    <button 
+      onClick={() => {
+        navigator.clipboard.writeText(window.location.href);
+        alert("Link copied to clipboard!");
+      }} 
+      className="bg-transparent border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-slate-200 px-4 py-2 rounded text-xs font-bold font-mono tracking-widest transition-colors uppercase"
+    >
+      Share
+    </button>
+    <button 
+      onClick={() => window.print()} 
+      className="bg-transparent border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-slate-200 px-4 py-2 rounded text-xs font-bold font-mono tracking-widest transition-colors uppercase"
+    >
+      PDF
+    </button>
+  </div>
+</div>
         </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
