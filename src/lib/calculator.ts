@@ -46,6 +46,8 @@ export interface ModernizationResults {
   renewalExposureBand: "Low" | "Moderate" | "High" | "Critical";
   migrationComplexityScore: number;
   migrationComplexityBand: "Low" | "Moderate" | "High" | "Very High";
+  modernizationPressureIndex: number;
+  modernizationPressureBand: "Stay" | "Evaluate" | "Plan Exit" | "Actively Migrate";
   scenarios: Scenario[];
   recommendedPath: string;
   frameworkSignals: FrameworkSignal[];
@@ -62,7 +64,11 @@ function calculateComplexity(inputs: EnvironmentProfile): { score: number, band:
   
   if (inputs.vmCount > 500) score += 15;
   if (inputs.hosts > 16) score += 10; 
-  if (inputs.storageTb > 250) score += 10; // Storage scale factor
+  
+  // Storage Multiplier Logic
+  if (inputs.storageTb >= 500) score += 20;
+  else if (inputs.storageTb >= 250) score += 15;
+  else if (inputs.storageTb >= 100) score += 10;
 
   let band: "Low" | "Moderate" | "High" | "Very High" = "Low";
   if (score >= 20) band = "Moderate";
@@ -102,11 +108,9 @@ function generateScenarios(inputs: EnvironmentProfile, totalCores: number, conso
   const TARGET_HW_NODE_COST = 35000;
   const TARGET_SW_RATE_PER_CORE = 150; 
   
-  // Explicit Target Capacity Math
   const optimizedVMwareCores = Math.ceil(totalCores / consolidationRatio);
-  
   const targetNodeCount = Math.ceil(inputs.hosts / consolidationRatio);
-  const targetCoresPerNode = inputs.socketsPerHost * inputs.coresPerSocket; // Matching source density
+  const targetCoresPerNode = inputs.socketsPerHost * inputs.coresPerSocket; 
   const targetTotalCores = targetNodeCount * targetCoresPerNode;
 
   return [
@@ -153,7 +157,7 @@ function generateScenarios(inputs: EnvironmentProfile, totalCores: number, conso
   ];
 }
 
-function evaluateFrameworks(inputs: EnvironmentProfile, exposure: number, consolidationRatio: number): FrameworkSignal[] {
+function evaluateFrameworks(inputs: EnvironmentProfile, exposure: number, consolidationRatio: number, totalCores: number): FrameworkSignal[] {
   const signals: FrameworkSignal[] = [];
 
   if (inputs.contractHorizonMonths <= 9 && inputs.growthRatePct > 15) {
@@ -179,23 +183,59 @@ function evaluateFrameworks(inputs: EnvironmentProfile, exposure: number, consol
     }
   }
 
+  if (inputs.bundle === "vcf" && totalCores > 500) {
+    signals.push({
+      id: "174",
+      title: "Governance Cost Inversion",
+      severity: "Warning",
+      driver: "VCF adoption at high core counts without offsetting automation.",
+      explanation: "Platform governance costs are growing faster than operational value derived from the additional platform features."
+    });
+  }
+
   return signals;
 }
 
 export function calculateModernization(inputs: EnvironmentProfile): ModernizationResults {
   const totalLicensedCores = inputs.hosts * inputs.socketsPerHost * inputs.coresPerSocket;
-  const consolidationRatio = inputs.vmCount > 0 && (inputs.vmCount / inputs.hosts) < 15 ? 1.1 : 1.4;
+  
+  // Dynamic Consolidation Ratio based on Density
+  const vmPerHost = inputs.hosts > 0 ? inputs.vmCount / inputs.hosts : 0;
+  let consolidationRatio = 1.1;
+  if (vmPerHost > 50) consolidationRatio = 1.7;
+  else if (vmPerHost > 30) consolidationRatio = 1.5;
+  else if (vmPerHost > 15) consolidationRatio = 1.3;
 
   const complexity = calculateComplexity(inputs);
   const exposure = calculateExposure(inputs, totalLicensedCores, consolidationRatio);
   const scenarios = generateScenarios(inputs, totalLicensedCores, consolidationRatio);
-  const frameworkSignals = evaluateFrameworks(inputs, exposure.score, consolidationRatio);
+  const frameworkSignals = evaluateFrameworks(inputs, exposure.score, consolidationRatio, totalLicensedCores);
 
+  // Modernization Pressure Index (MPI)
+  const mpi = Math.round((exposure.score * 0.6) - (complexity.score * 0.4));
+  let mpiBand: "Stay" | "Evaluate" | "Plan Exit" | "Actively Migrate" = "Stay";
+  if (mpi >= 40) mpiBand = "Actively Migrate";
+  else if (mpi >= 20) mpiBand = "Plan Exit";
+  else if (mpi >= 0) mpiBand = "Evaluate";
+
+  // Granular Recommendation Logic
   let recommendedPath = "Consolidate and renew existing footprint.";
-  if (exposure.band === "Critical" && complexity.band !== "Very High") {
-    recommendedPath = `Target Scenario C: Full Migration. Modeled planning window: ${scenarios[2].migrationEffortMonths} months.`;
-  } else if (exposure.band === "High" && complexity.band === "Very High") {
-    recommendedPath = `Target Scenario D: Hybrid Transition. Isolate complex workloads and migrate standard VMs over a modeled ${scenarios[3].migrationEffortMonths}-month window.`;
+  if (exposure.band === "Low") {
+    recommendedPath = "Target Scenario A: Renew As-Is. The current exposure does not justify the migration complexity.";
+  } else if (exposure.band === "Moderate") {
+    recommendedPath = "Target Scenario B: Reduce & Renew. Focus on consolidating hardware footprints prior to the renewal event.";
+  } else if (exposure.band === "High") {
+    if (complexity.band === "Low" || complexity.band === "Moderate") {
+      recommendedPath = "Target Scenario C: Evaluate Migration. The exposure level justifies the operational transition.";
+    } else {
+      recommendedPath = "Target Scenario D: Hybrid Transition. High architectural complexity currently prohibits a full exit.";
+    }
+  } else if (exposure.band === "Critical") {
+    if (complexity.band === "Very High" || complexity.band === "High") {
+      recommendedPath = "Target Scenario D: Hybrid Transition. Isolate complex dependencies and migrate standard workloads first.";
+    } else {
+      recommendedPath = `Target Scenario C: Full Migration. Modeled planning window: ${scenarios[2].migrationEffortMonths} months.`;
+    }
   }
 
   return {
@@ -205,6 +245,8 @@ export function calculateModernization(inputs: EnvironmentProfile): Modernizatio
     renewalExposureBand: exposure.band,
     migrationComplexityScore: complexity.score,
     migrationComplexityBand: complexity.band,
+    modernizationPressureIndex: mpi,
+    modernizationPressureBand: mpiBand,
     scenarios,
     recommendedPath,
     frameworkSignals
