@@ -7,7 +7,6 @@ import {
   ModernizationResults 
 } from "@/lib/calculator"; 
 
-// 1. Factory Function guarantees a fresh object reference every time
 const getDefaultProfile = (): EnvironmentProfile => ({
   hosts: 6,
   socketsPerHost: 2,
@@ -25,9 +24,11 @@ const getDefaultProfile = (): EnvironmentProfile => ({
 });
 
 export default function ModernizationPlanner() {
-  // 2. Initialize with the factory
   const [profile, setProfile] = useState<EnvironmentProfile>(getDefaultProfile());
   const [results, setResults] = useState<ModernizationResults | null>(null);
+  
+  // Forces React to unmount and remount the inputs, guaranteeing a visual reset
+  const [resetKey, setResetKey] = useState(0);
 
   useEffect(() => {
     const updatedResults = calculateModernization(profile);
@@ -47,10 +48,10 @@ export default function ModernizationPlanner() {
     setProfile(prev => ({ ...prev, [e.target.name]: e.target.value as "vcf" | "vvf" }));
   };
 
-  // 3. Reset uses the factory to force React to detect a new reference
   const handleReset = () => {
     setProfile(getDefaultProfile());
-    window.scrollTo({ top: 0, behavior: 'smooth' }); // UX enhancement
+    setResetKey(prev => prev + 1); // Triggers DOM refresh
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const getBandColor = (band: string) => {
@@ -75,37 +76,44 @@ export default function ModernizationPlanner() {
   if (!results) return <div className="min-h-screen bg-[#0f172a] text-slate-200 flex items-center justify-center font-mono">INITIALIZING ENGINE...</div>;
 
   return (
-    <div className="min-h-screen bg-[#0f172a] text-slate-300 font-sans p-6 lg:p-12">
+    <div className="min-h-screen bg-[#0a0f1e] text-slate-300 font-sans p-6 lg:p-12">
       <div className="max-w-7xl mx-auto">
         
-        <header className="mb-12 border-b border-slate-800 pb-6">
-          <img src="/R2C_Logo.png" alt="Rack2Cloud" className="h-10 mb-8 object-contain" />
+        {/* REBUILT HEADER BLOCK */}
+        <header className="mb-12 pt-4">
+          <div className="flex flex-wrap gap-3 mb-6 font-mono text-[10px] sm:text-xs tracking-widest uppercase">
+            <span className="border border-sky-500 text-sky-400 px-3 py-1.5 rounded-sm">Virtualization Architecture: Tool</span>
+            <span className="border border-slate-700 text-slate-400 px-3 py-1.5 rounded-sm hidden sm:inline-block">VMware Renewal Economics</span>
+            <span className="border border-slate-700 text-slate-400 px-3 py-1.5 rounded-sm hidden md:inline-block">Frameworks #171, #173, #174</span>
+          </div>
           
-          <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
-            <div>
-              <div className="font-mono text-xs font-bold uppercase tracking-widest text-sky-400 mb-2">
-                &gt;_ Rack2Cloud Diagnostics
-              </div>
-              <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight uppercase">
-                VMware Modernization Planner
-              </h1>
-              <p className="text-slate-400 mt-2 max-w-2xl text-sm leading-relaxed">
-                The VMware Modernization Planner models renewal exposure, migration complexity, licensing pressure, and modernization scenarios using deterministic infrastructure architecture assumptions.
-              </p>
-            </div>
-            
-            <div className="shrink-0 flex gap-3">
-              <button type="button" onClick={() => { navigator.clipboard.writeText(window.location.href); alert("Link copied to clipboard!"); }} className="bg-transparent border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-slate-200 px-4 py-2 rounded text-xs font-bold font-mono tracking-widest transition-colors uppercase">
-                Share
-              </button>
-              <button type="button" onClick={() => window.print()} className="bg-transparent border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-slate-200 px-4 py-2 rounded text-xs font-bold font-mono tracking-widest transition-colors uppercase">
-                PDF
-              </button>
-            </div>
+          <h1 className="text-5xl md:text-7xl font-black text-white tracking-tighter uppercase leading-none mb-6">
+            VMWARE MODERNIZATION <span className="text-sky-500">PLANNER</span>
+          </h1>
+          
+          <p className="font-mono text-slate-400 text-xs sm:text-sm uppercase tracking-widest max-w-4xl leading-relaxed mb-8">
+            Model renewal exposure, migration complexity, licensing pressure, and modernization scenarios using deterministic infrastructure architecture assumptions.
+          </p>
+          
+          <div className="flex flex-wrap gap-6 font-mono text-[10px] sm:text-xs text-slate-500 uppercase tracking-widest">
+            <span className="flex items-center gap-2"><span className="text-emerald-500">✓</span> Input-Driven. No Telemetry Required.</span>
+            <span className="flex items-center gap-2"><span className="text-emerald-500">✓</span> Deterministic. Not AI-Generated.</span>
+            <span className="flex items-center gap-2"><span className="text-emerald-500">✓</span> Runs Entirely In Your Browser.</span>
           </div>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* ACTION BAR (MOVED FROM HEADER) */}
+        <div className="flex justify-end gap-3 mb-4">
+          <button type="button" onClick={() => { navigator.clipboard.writeText(window.location.href); alert("Link copied to clipboard!"); }} className="bg-slate-900 border border-slate-700 hover:border-slate-500 text-slate-300 px-5 py-2 rounded text-[10px] font-bold font-mono tracking-widest transition-colors uppercase">
+            Share
+          </button>
+          <button type="button" onClick={() => window.print()} className="bg-slate-900 border border-slate-700 hover:border-slate-500 text-slate-300 px-5 py-2 rounded text-[10px] font-bold font-mono tracking-widest transition-colors uppercase">
+            PDF
+          </button>
+        </div>
+
+        {/* MAIN APP GRID (Keyed for strict resetting) */}
+        <div key={resetKey} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
           {/* LEFT PANEL */}
           <div className="lg:col-span-4 space-y-8">
@@ -119,35 +127,35 @@ export default function ModernizationPlanner() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-slate-400 mb-1">Total Hosts</label>
-                    <input type="number" name="hosts" value={profile.hosts} onChange={handleNumberChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono" />
+                    <input type="number" name="hosts" defaultValue={profile.hosts} onChange={handleNumberChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono" />
                   </div>
                   <div>
                     <label className="block text-slate-400 mb-1">Sockets/Host</label>
-                    <input type="number" name="socketsPerHost" value={profile.socketsPerHost} onChange={handleNumberChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono" />
+                    <input type="number" name="socketsPerHost" defaultValue={profile.socketsPerHost} onChange={handleNumberChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono" />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-slate-400 mb-1">Cores/Socket</label>
-                    <input type="number" name="coresPerSocket" value={profile.coresPerSocket} onChange={handleNumberChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono" />
+                    <input type="number" name="coresPerSocket" defaultValue={profile.coresPerSocket} onChange={handleNumberChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono" />
                   </div>
                   <div>
                     <label className="block text-slate-400 mb-1">VM Count</label>
-                    <input type="number" name="vmCount" value={profile.vmCount} onChange={handleNumberChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono" />
+                    <input type="number" name="vmCount" defaultValue={profile.vmCount} onChange={handleNumberChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono" />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="col-span-2">
                     <label className="block text-slate-400 mb-1">Storage (TB)</label>
-                    <input type="number" name="storageTb" value={profile.storageTb} onChange={handleNumberChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono" />
+                    <input type="number" name="storageTb" defaultValue={profile.storageTb} onChange={handleNumberChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono" />
                   </div>
                 </div>
 
                 <div className="mt-4">
                   <label className="block text-slate-400 mb-1">VMware Renewal Bundle</label>
-                  <select name="bundle" value={profile.bundle} onChange={handleSelectChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono uppercase">
+                  <select name="bundle" defaultValue={profile.bundle} onChange={handleSelectChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono uppercase">
                     <option value="vvf">VMware vSphere Foundation (VVF)</option>
                     <option value="vcf">VMware Cloud Foundation (VCF)</option>
                   </select>
@@ -156,11 +164,11 @@ export default function ModernizationPlanner() {
                 <div className="grid grid-cols-2 gap-4 pt-2">
                   <div>
                     <label className="block text-slate-400 mb-1">Growth/Yr (%)</label>
-                    <input type="number" name="growthRatePct" value={profile.growthRatePct} onChange={handleNumberChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono" />
+                    <input type="number" name="growthRatePct" defaultValue={profile.growthRatePct} onChange={handleNumberChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono" />
                   </div>
                   <div>
                     <label className="block text-slate-400 mb-1">Renewal (Mos)</label>
-                    <input type="number" name="contractHorizonMonths" value={profile.contractHorizonMonths} onChange={handleNumberChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono" />
+                    <input type="number" name="contractHorizonMonths" defaultValue={profile.contractHorizonMonths} onChange={handleNumberChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono" />
                   </div>
                 </div>
               </div>
@@ -180,7 +188,7 @@ export default function ModernizationPlanner() {
                   { name: "hasK8s", label: "Tanzu / K8s" }
                 ].map((feature) => (
                   <label key={feature.name} className="flex items-center space-x-3 cursor-pointer p-2 hover:bg-slate-800/50 rounded transition-colors border border-transparent hover:border-slate-700">
-                    <input type="checkbox" name={feature.name} checked={profile[feature.name as keyof EnvironmentProfile] as boolean} onChange={handleCheckboxChange} className="form-checkbox h-4 w-4 text-sky-500 bg-[#0a0f1e] border-slate-700 rounded focus:ring-sky-500 focus:ring-offset-slate-900" />
+                    <input type="checkbox" name={feature.name} defaultChecked={profile[feature.name as keyof EnvironmentProfile] as boolean} onChange={handleCheckboxChange} className="form-checkbox h-4 w-4 text-sky-500 bg-[#0a0f1e] border-slate-700 rounded focus:ring-sky-500 focus:ring-offset-slate-900" />
                     <span className="text-slate-300">{feature.label}</span>
                   </label>
                 ))}
