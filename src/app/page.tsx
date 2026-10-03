@@ -64,27 +64,42 @@ export default function ModernizationPlanner() {
     <div className="min-h-screen bg-[#0f172a] text-slate-300 font-sans p-6 lg:p-12">
       <div className="max-w-7xl mx-auto">
         
-        {/* Header with Print Button */}
-        <header className="mb-12 border-b border-slate-800 pb-6 flex flex-col md:flex-row md:items-start justify-between gap-6">
-          <div>
-            <div className="font-mono text-xs font-bold uppercase tracking-widest text-sky-400 mb-2">
-              &gt;_ Rack2Cloud Diagnostics
+        {/* Header with Logo and Action Buttons */}
+        <header className="mb-12 border-b border-slate-800 pb-6">
+          {/* Logo element - reads from public/R2C_Logo.png */}
+          <img src="/R2C_Logo.png" alt="Rack2Cloud" className="h-10 mb-8 object-contain" />
+          
+          <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
+            <div>
+              <div className="font-mono text-xs font-bold uppercase tracking-widest text-sky-400 mb-2">
+                &gt;_ Rack2Cloud Diagnostics
+              </div>
+              <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight uppercase">
+                VMware Modernization Planner
+              </h1>
+              <p className="text-slate-400 mt-2 max-w-2xl text-sm leading-relaxed">
+                Deterministic architectural modeling. Enter your footprint telemetry to generate your renewal exposure baseline, migration complexity scorecard, and strategic path analysis.
+              </p>
             </div>
-            <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight uppercase">
-              VMware Modernization Planner
-            </h1>
-            <p className="text-slate-400 mt-2 max-w-2xl text-sm leading-relaxed">
-              Deterministic architectural modeling. Enter your footprint telemetry to generate your renewal exposure baseline, migration complexity scorecard, and strategic path analysis.
-            </p>
-          </div>
-          <div className="shrink-0 flex gap-4">
-            <button 
-              onClick={() => window.print()} 
-              className="flex items-center gap-2 bg-[#0a0f1e] hover:bg-slate-800 text-sky-400 px-4 py-2 border border-sky-900 rounded text-xs font-bold font-mono tracking-widest transition-colors uppercase"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
-              Print / PDF
-            </button>
+            
+            {/* Share and PDF Buttons styled like Cost Model */}
+            <div className="shrink-0 flex gap-3">
+              <button 
+                onClick={() => {
+                  navigator.clipboard.writeText(window.location.href);
+                  alert("Link copied to clipboard!");
+                }} 
+                className="bg-transparent border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-slate-200 px-4 py-2 rounded text-xs font-bold font-mono tracking-widest transition-colors uppercase"
+              >
+                Share
+              </button>
+              <button 
+                onClick={() => window.print()} 
+                className="bg-transparent border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-slate-200 px-4 py-2 rounded text-xs font-bold font-mono tracking-widest transition-colors uppercase"
+              >
+                PDF
+              </button>
+            </div>
           </div>
         </header>
 
@@ -279,13 +294,23 @@ export default function ModernizationPlanner() {
         </div>
 
         {/* Disclaimer Footer */}
-        <div className="mt-12 pt-8 border-t border-slate-800 text-center pb-12">
-          <p className="text-xs text-slate-500 font-mono leading-relaxed max-w-4xl mx-auto">
+        <div className="mt-12 pt-8 border-t border-slate-800 pb-12">
+          
+          {/* Left-Aligned Main Disclaimer */}
+          <div className="text-left mb-10 text-xs text-slate-500 font-mono leading-relaxed">
             <strong className="text-slate-400 uppercase tracking-widest">&gt;_ Disclaimer:</strong> The VMware Modernization Planner is a strategic estimation tool based on field observations, generalized platform pricing, and standard architectural patterns. It does not constitute a formal vendor quote, guaranteed pricing, or binding architectural advice. Actual renewal costs and migration complexities will vary based on enterprise agreements, workload telemetry, and specific technical debt. Nothing leaves your browser.
-          </p>
+          </div>
+
+          {/* Privacy Architecture Block */}
+          <div className="pt-6 border-t border-slate-800/50 text-left text-slate-400 font-sans text-sm">
+            <p className="m-0">
+              <span className="mr-2">🔒</span> <strong>Privacy Architecture:</strong> No cookies. No tracking pixels. No server-side database. <br />
+              <span className="text-slate-500">This logic runs entirely in your local browser session.</span>
+            </p>
+          </div>
+
         </div>
 
       </div>
     </div>
   );
-}
