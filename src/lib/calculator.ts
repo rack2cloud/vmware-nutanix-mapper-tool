@@ -169,8 +169,7 @@ function evaluateFrameworks(inputs: EnvironmentProfile, exposure: number, consol
       severity: "Critical",
       driver: "Rapid growth colliding with an imminent renewal.",
       explanation: "Licensing renewal and capacity expansion are occurring within the same immediate budget cycle, multiplying the cost impact.",
-      frameworkUrl: "https://www.rack2cloud.com/lifecycle-convergence/",
-      briefUrl: "/architects-brief/managing-rapid-growth-renewals" // Replace or delete
+      frameworkUrl: "https://www.rack2cloud.com/lifecycle-convergence/"
     });
   }
 
@@ -183,8 +182,7 @@ function evaluateFrameworks(inputs: EnvironmentProfile, exposure: number, consol
         severity: "Warning",
         driver: "Low consolidation potential driven by poor workload density.",
         explanation: `Averaging ${coresPerVm.toFixed(1)} cores per VM. You are paying enterprise per-core licensing premiums for unused compute headroom.`,
-        frameworkUrl: "https://www.rack2cloud.com/phantom-capacity/",
-        briefUrl: "/architects-brief/vmware-workload-density-optimization" // Replace or delete
+        frameworkUrl: "https://www.rack2cloud.com/phantom-capacity/"
       });
     }
   }
@@ -196,8 +194,7 @@ function evaluateFrameworks(inputs: EnvironmentProfile, exposure: number, consol
       severity: "Warning",
       driver: "VCF adoption at high core counts without offsetting automation.",
       explanation: "Platform governance costs are growing faster than operational value derived from the additional platform features.",
-      frameworkUrl: "https://www.rack2cloud.com/governance-cost-inversion/",
-      briefUrl: "/architects-brief/vcf-adoption-scale-economics" // Replace or delete
+      frameworkUrl: "https://www.rack2cloud.com/governance-cost-inversion/"
     });
   }
 
