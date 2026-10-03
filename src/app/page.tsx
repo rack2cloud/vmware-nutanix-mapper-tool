@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { 
   calculateModernization, 
   EnvironmentProfile, 
@@ -26,9 +27,6 @@ const getDefaultProfile = (): EnvironmentProfile => ({
 export default function ModernizationPlanner() {
   const [profile, setProfile] = useState<EnvironmentProfile>(getDefaultProfile());
   const [results, setResults] = useState<ModernizationResults | null>(null);
-  
-  // Forces React to unmount and remount the inputs, guaranteeing a visual reset
-  const [resetKey, setResetKey] = useState(0);
 
   useEffect(() => {
     const updatedResults = calculateModernization(profile);
@@ -50,7 +48,6 @@ export default function ModernizationPlanner() {
 
   const handleReset = () => {
     setProfile(getDefaultProfile());
-    setResetKey(prev => prev + 1); // Triggers DOM refresh
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -73,7 +70,7 @@ export default function ModernizationPlanner() {
     }
   };
 
-  if (!results) return <div className="min-h-screen bg-[#0f172a] text-slate-200 flex items-center justify-center font-mono">INITIALIZING ENGINE...</div>;
+  if (!results) return <div className="min-h-screen bg-[#0a0f1e] text-slate-200 flex items-center justify-center font-mono">INITIALIZING ENGINE...</div>;
 
   return (
     <div className="min-h-screen bg-[#0a0f1e] text-slate-300 font-sans p-6 lg:p-12">
@@ -102,7 +99,7 @@ export default function ModernizationPlanner() {
           </div>
         </header>
 
-        {/* ACTION BAR (MOVED FROM HEADER) */}
+        {/* ACTION BAR */}
         <div className="flex justify-end gap-3 mb-4">
           <button type="button" onClick={() => { navigator.clipboard.writeText(window.location.href); alert("Link copied to clipboard!"); }} className="bg-slate-900 border border-slate-700 hover:border-slate-500 text-slate-300 px-5 py-2 rounded text-[10px] font-bold font-mono tracking-widest transition-colors uppercase">
             Share
@@ -112,8 +109,8 @@ export default function ModernizationPlanner() {
           </button>
         </div>
 
-        {/* MAIN APP GRID (Keyed for strict resetting) */}
-        <div key={resetKey} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* MAIN APP GRID */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
           {/* LEFT PANEL */}
           <div className="lg:col-span-4 space-y-8">
@@ -127,35 +124,35 @@ export default function ModernizationPlanner() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-slate-400 mb-1">Total Hosts</label>
-                    <input type="number" name="hosts" defaultValue={profile.hosts} onChange={handleNumberChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono" />
+                    <input type="number" name="hosts" value={profile.hosts} onChange={handleNumberChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono" />
                   </div>
                   <div>
                     <label className="block text-slate-400 mb-1">Sockets/Host</label>
-                    <input type="number" name="socketsPerHost" defaultValue={profile.socketsPerHost} onChange={handleNumberChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono" />
+                    <input type="number" name="socketsPerHost" value={profile.socketsPerHost} onChange={handleNumberChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono" />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-slate-400 mb-1">Cores/Socket</label>
-                    <input type="number" name="coresPerSocket" defaultValue={profile.coresPerSocket} onChange={handleNumberChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono" />
+                    <input type="number" name="coresPerSocket" value={profile.coresPerSocket} onChange={handleNumberChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono" />
                   </div>
                   <div>
                     <label className="block text-slate-400 mb-1">VM Count</label>
-                    <input type="number" name="vmCount" defaultValue={profile.vmCount} onChange={handleNumberChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono" />
+                    <input type="number" name="vmCount" value={profile.vmCount} onChange={handleNumberChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono" />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="col-span-2">
                     <label className="block text-slate-400 mb-1">Storage (TB)</label>
-                    <input type="number" name="storageTb" defaultValue={profile.storageTb} onChange={handleNumberChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono" />
+                    <input type="number" name="storageTb" value={profile.storageTb} onChange={handleNumberChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono" />
                   </div>
                 </div>
 
                 <div className="mt-4">
                   <label className="block text-slate-400 mb-1">VMware Renewal Bundle</label>
-                  <select name="bundle" defaultValue={profile.bundle} onChange={handleSelectChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono uppercase">
+                  <select name="bundle" value={profile.bundle} onChange={handleSelectChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono uppercase">
                     <option value="vvf">VMware vSphere Foundation (VVF)</option>
                     <option value="vcf">VMware Cloud Foundation (VCF)</option>
                   </select>
@@ -164,11 +161,11 @@ export default function ModernizationPlanner() {
                 <div className="grid grid-cols-2 gap-4 pt-2">
                   <div>
                     <label className="block text-slate-400 mb-1">Growth/Yr (%)</label>
-                    <input type="number" name="growthRatePct" defaultValue={profile.growthRatePct} onChange={handleNumberChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono" />
+                    <input type="number" name="growthRatePct" value={profile.growthRatePct} onChange={handleNumberChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono" />
                   </div>
                   <div>
                     <label className="block text-slate-400 mb-1">Renewal (Mos)</label>
-                    <input type="number" name="contractHorizonMonths" defaultValue={profile.contractHorizonMonths} onChange={handleNumberChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono" />
+                    <input type="number" name="contractHorizonMonths" value={profile.contractHorizonMonths} onChange={handleNumberChange} className="w-full bg-[#0a0f1e] border border-slate-700 rounded px-3 py-2 text-white focus:border-sky-400 focus:outline-none font-mono" />
                   </div>
                 </div>
               </div>
@@ -188,7 +185,7 @@ export default function ModernizationPlanner() {
                   { name: "hasK8s", label: "Tanzu / K8s" }
                 ].map((feature) => (
                   <label key={feature.name} className="flex items-center space-x-3 cursor-pointer p-2 hover:bg-slate-800/50 rounded transition-colors border border-transparent hover:border-slate-700">
-                    <input type="checkbox" name={feature.name} defaultChecked={profile[feature.name as keyof EnvironmentProfile] as boolean} onChange={handleCheckboxChange} className="form-checkbox h-4 w-4 text-sky-500 bg-[#0a0f1e] border-slate-700 rounded focus:ring-sky-500 focus:ring-offset-slate-900" />
+                    <input type="checkbox" name={feature.name} checked={profile[feature.name as keyof EnvironmentProfile] as boolean} onChange={handleCheckboxChange} className="form-checkbox h-4 w-4 text-sky-500 bg-[#0a0f1e] border-slate-700 rounded focus:ring-sky-500 focus:ring-offset-slate-900" />
                     <span className="text-slate-300">{feature.label}</span>
                   </label>
                 ))}
@@ -256,17 +253,48 @@ export default function ModernizationPlanner() {
 
             </div>
 
+            {/* REBUILT FRAMEWORK SIGNALS ROUTING BLOCK */}
             {results.frameworkSignals.length > 0 && (
               <div className="space-y-4">
                 {results.frameworkSignals.map((signal) => (
-                  <div key={signal.id} className="bg-slate-900 border-l-4 border-rose-500 p-4 border border-slate-800 rounded-r-lg flex gap-4 items-start">
-                    <div className="bg-rose-500/20 text-rose-400 font-mono text-xs font-bold px-2 py-1 rounded mt-1">
-                      #{signal.id}
-                    </div>
+                  <div key={signal.id} className="bg-slate-900 border-l-4 border-rose-500 p-5 border border-slate-800 rounded-r-lg flex flex-col gap-3">
+                    
+                    {/* Header: Clickable Badge & Title */}
                     <div>
-                      <h4 className="text-white font-bold text-sm uppercase tracking-wide">{signal.title}</h4>
-                      <p className="text-slate-400 text-sm mt-1">{signal.driver} {signal.explanation}</p>
+                      {signal.frameworkUrl ? (
+                        <Link href={signal.frameworkUrl} className="inline-flex items-center gap-3 group mb-2">
+                          <span className="bg-rose-500/10 border border-rose-500/20 text-rose-400 font-mono text-[10px] uppercase tracking-widest font-bold px-2 py-1 rounded transition-colors group-hover:bg-rose-500/20">
+                            FRAMEWORK #{signal.id}
+                          </span>
+                          <h4 className="text-white font-bold text-sm uppercase tracking-wide group-hover:text-rose-300 transition-colors">
+                            {signal.title}
+                          </h4>
+                        </Link>
+                      ) : (
+                        <div className="inline-flex items-center gap-3 mb-2">
+                          <span className="bg-rose-500/10 border border-rose-500/20 text-rose-400 font-mono text-[10px] uppercase tracking-widest font-bold px-2 py-1 rounded">
+                            FRAMEWORK #{signal.id}
+                          </span>
+                          <h4 className="text-white font-bold text-sm uppercase tracking-wide">
+                            {signal.title}
+                          </h4>
+                        </div>
+                      )}
+                      
+                      {/* Body Description */}
+                      <p className="text-slate-400 text-sm leading-relaxed">
+                        <span className="text-slate-300 font-medium">{signal.driver}</span> {signal.explanation}
+                      </p>
                     </div>
+
+                    {/* Action Footer: Architect's Brief */}
+                    {signal.briefUrl && (
+                      <div className="mt-2 pt-3 border-t border-slate-800/60 flex justify-start">
+                        <Link href={signal.briefUrl} className="text-sky-400 hover:text-sky-300 font-mono text-[10px] uppercase font-bold tracking-widest transition-colors flex items-center gap-1.5 group">
+                          Architect's Brief <span className="group-hover:translate-x-1 transition-transform">→</span>
+                        </Link>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
