@@ -318,7 +318,7 @@ export default function ModernizationPlanner() {
           <div className="text-left mb-10 text-xs text-slate-500 font-mono leading-relaxed">
             <strong className="text-slate-400 uppercase tracking-widest">&gt;_ Disclaimer:</strong> The VMware Modernization Planner is a strategic estimation tool based on field observations, generalized platform pricing, and standard architectural patterns. It does not constitute a formal vendor quote, guaranteed pricing, or binding architectural advice. Actual renewal costs and migration complexities will vary based on enterprise agreements, workload telemetry, and specific technical debt.
           </div>
-          <div className="pt-6 border-t border-slate-800/50 text-left text-slate-400 font-sans text-sm">
+          <div className="pt-6 border-t border-slate-800/50 text-center text-slate-400 font-sans text-sm">
             <p className="m-0">
               <span className="mr-2">🔒</span> <strong>Privacy Architecture:</strong> The calculator performs all modeling locally in your browser. <br />
               <span className="text-slate-500">No calculator inputs are transmitted to Rack2Cloud servers.</span>
