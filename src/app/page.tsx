@@ -7,7 +7,8 @@ import {
   ModernizationResults 
 } from "@/lib/calculator"; 
 
-const INITIAL_PROFILE: EnvironmentProfile = {
+// 1. Factory Function guarantees a fresh object reference every time
+const getDefaultProfile = (): EnvironmentProfile => ({
   hosts: 6,
   socketsPerHost: 2,
   coresPerSocket: 48,
@@ -21,10 +22,11 @@ const INITIAL_PROFILE: EnvironmentProfile = {
   hasSrm: true,
   hasHorizon: false,
   hasK8s: false,
-};
+});
 
 export default function ModernizationPlanner() {
-  const [profile, setProfile] = useState<EnvironmentProfile>(INITIAL_PROFILE);
+  // 2. Initialize with the factory
+  const [profile, setProfile] = useState<EnvironmentProfile>(getDefaultProfile());
   const [results, setResults] = useState<ModernizationResults | null>(null);
 
   useEffect(() => {
@@ -45,8 +47,10 @@ export default function ModernizationPlanner() {
     setProfile(prev => ({ ...prev, [e.target.name]: e.target.value as "vcf" | "vvf" }));
   };
 
+  // 3. Reset uses the factory to force React to detect a new reference
   const handleReset = () => {
-    setProfile(() => ({ ...INITIAL_PROFILE }));
+    setProfile(getDefaultProfile());
+    window.scrollTo({ top: 0, behavior: 'smooth' }); // UX enhancement
   };
 
   const getBandColor = (band: string) => {
